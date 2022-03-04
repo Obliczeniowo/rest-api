@@ -1,10 +1,10 @@
 const express = require('express');
 
-const feedRoutes = require('./controllers/feed.controllers.js');
+const feedRoutes = require('./routes/feed.routes.js');
 
 const app = express();
 
-app.use(feedRoute, feedRoutes);
+app.use('/feed',feedRoutes);
 
 app.listen(8080);
 
