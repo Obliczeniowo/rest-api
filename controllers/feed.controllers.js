@@ -2,20 +2,20 @@ const { validationResult } = require('express-validator');
 
 const Post = require('../models/post.js');
 
+const errorCb = (err, next) => {
+  if (!err.statusCode) {
+    err.statusCode = 500;
+  }
+  return next(err);
+};
+
 exports.getPosts = (req, res, next) => {
-  res.status(200).json({
-    posts: [
-      {
-        _id: '12321',
-        title: 'title',
-        content: 'First post ever!',
-        imageUrl: 'images/winchester.jpg',
-        creator: {
-          name: 'some name',
-        },
-        createdAt: new Date(),
-      },
-    ],
+  Post.find().then((posts) => {
+    res.status(200).json({
+      posts,
+    });
+  }).catch((err) => {
+      errorCb(err, next);
   });
 };
 
@@ -41,9 +41,23 @@ exports.postPosts = (req, res, next) => {
       });
     })
     .catch((err) => {
-      if (!err.statusCode) {
-        err.statusCode = 500;
+      errorCb(err, next);
+    });
+};
+
+exports.getPost = (req, res, next) => {
+  const id = req.params.id;
+
+  Post.findById(id)
+    .then((post) => {
+      if (!post) {
+        const error = new Error('Could not find post');
+        error.statusCode = 404;
+        throw error;
       }
-      next(err);
+      res.status(200).json({ post });
+    })
+    .catch((err) => {
+      errorCb(err, next);
     });
 };
