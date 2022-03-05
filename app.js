@@ -7,6 +7,7 @@ const multer = require('multer');
 
 const feedRoutes = require('./routes/feed.routes.js');
 const authRoutes = require('./routes/auth.routes.js');
+const statusRoutes = require('./routes/status.routes.js');
 
 const mongodbUrl = 'mongodb://localhost:27017';
 
@@ -43,7 +44,7 @@ app.use((req, res, next) => {
     'Origin, X-requested-With, Content-Type, Accept, Authorization'
   );
   if (req.method === 'OPTIONS') {
-    res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
+    res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH');
     return res.status(200).json({});
   }
   next();
@@ -51,6 +52,7 @@ app.use((req, res, next) => {
 
 app.use('/feed', feedRoutes);
 app.use('/auth', authRoutes);
+app.use('/user', statusRoutes)
 
 app.use((error, req, res, next) => {
   console.log(error);
