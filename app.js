@@ -6,6 +6,7 @@ const mongoose = require('mongoose');
 const multer = require('multer');
 
 const feedRoutes = require('./routes/feed.routes.js');
+const authRoutes = require('./routes/auth.routes.js');
 
 const mongodbUrl = 'mongodb://localhost:27017';
 
@@ -49,12 +50,13 @@ app.use((req, res, next) => {
 });
 
 app.use('/feed', feedRoutes);
+app.use('/auth', authRoutes);
 
 app.use((error, req, res, next) => {
   console.log(error);
   const status = error.statusCode;
   const messages = error.messages;
-  res.status(status).json({ message: messages });
+  res.status(status).json({ message: messages, error });
 });
 
 mongoose

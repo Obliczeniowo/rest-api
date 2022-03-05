@@ -3,20 +3,9 @@ const path = require('path');
 
 const { validationResult } = require('express-validator');
 
-const Post = require('../models/post.js');
+const { errorCb, getError } = require('../utils/errors.js');
 
-const errorCb = (err, next) => {
-  if (!err.statusCode) {
-    err.statusCode = 500;
-  }
-  return next(err);
-};
-
-const getError = (message, code) => {
-  const err = new Error(message);
-  err.status = code;
-  return err;
-};
+const Post = require('../models/post.model.js');
 
 exports.getPosts = (req, res, next) => {
   const page = req.query.page;
@@ -35,7 +24,7 @@ exports.getPosts = (req, res, next) => {
       res.status(200).json({
         posts,
         totalItems: totalIatems,
-        
+
       });
     })
     .catch((err) => {
