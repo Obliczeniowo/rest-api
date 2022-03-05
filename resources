@@ -1,3 +1,7 @@
 Example: Build a Complete RESTful API from Scratch: https://academind.com/learn/node-js/building-a-restful-api-with/
 
 Async-await - More Details: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/async_function
+
+    Socket.io Official Docs: https://socket.io/get-started/chat/
+
+    Alternative Websocket Library: https://www.npmjs.com/package/express-ws

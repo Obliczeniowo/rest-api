@@ -66,7 +66,8 @@ mongoose
   .then(() => {
     const server = app.listen(8080);
 
-    const io = require('socket.io')(server);
+    // https://socket.io/docs/v3/handling-cors/
+    const io = require('./socket').init(server);
     io.on('connection', socket => {
         console.log('Client connected');
     })
