@@ -123,10 +123,12 @@ exports.deletePost = (req, res, next) => {
       if (!post) {
         throw getError('Could not find', 404);
       }
-      clearImage(post.imageUrl);
-      return post.findByIdAndRemove(id);
+      try {
+          clearImage(post.imageUrl);
+      } catch(err) {}
+      return Post.findByIdAndDelete(id);
     })
-    .catch((result) => {
+    .then((result) => {
       res.status(200).json({ message: 'Post deleted' });
     })
     .catch((err) => {
