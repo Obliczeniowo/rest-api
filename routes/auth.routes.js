@@ -13,14 +13,14 @@ router.put(
     body('email')
       .isEmail()
       .withMessage('Please enter email address')
+      .normalizeEmail()
       .custom((value, { req }) => {
         return User.findOne({ email: value }).then((user) => {
           if (user) {
             return Promise.reject('E-mail exist');
           }
         });
-      })
-      .normalizeEmail(),
+      }),
     body('password').trim().isLength({ min: 5 }),
     body('name').trim().notEmpty(),
   ],
