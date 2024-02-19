@@ -64,6 +64,12 @@ app.use((error, req, res, next) => {
 mongoose
   .connect(mongodbUrl, { dbName: 'messages' })
   .then(() => {
-    app.listen(8080);
+    const server = app.listen(8080);
+
+    // https://socket.io/docs/v3/handling-cors/
+    const io = require('./socket').init(server);
+    io.on('connection', socket => {
+        console.log('Client connected');
+    })
   })
   .catch((err) => console.log(err));
