@@ -5,6 +5,14 @@ const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const multer = require('multer');
 
+const auth = require('./middleware/auth');
+
+const { graphqlHTTP } = require('express-graphql');
+
+const graphqlSchema = require('./graphql/schema.js');
+
+const graphqlResolver = require('./graphql/resolvers');
+
 const mongodbUrl = 'mongodb://localhost:27017';
 
 const app = express();
@@ -33,6 +41,8 @@ app.use(
 
 app.use('/images', express.static(path.join(__dirname, 'images')));
 
+app.use(auth);
+
 app.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', '*');
   res.header(
@@ -46,6 +56,25 @@ app.use((req, res, next) => {
   next();
 });
 
+app.use(
+  '/graphql',
+  graphqlHTTP({
+    schema: graphqlSchema,
+    rootValue: graphqlResolver,
+    graphiql: true,
+    customFormatErrorFn(err) {
+      if (!err.originalError) {
+        return err;
+      }
+      const data = err.originalError.data;
+      const message = err.message || 'An error occurred.';
+      const code = err.originalError.code || 500;
+
+      return { message, status: code, data };
+    }
+  })
+);
+
 app.use((error, req, res, next) => {
   console.log(error);
   const status = error.statusCode;
@@ -56,6 +85,6 @@ app.use((error, req, res, next) => {
 mongoose
   .connect(mongodbUrl, { dbName: 'messages' })
   .then(() => {
-    const server = app.listen(8080);
+    const server = app.listen(8000);
   })
   .catch((err) => console.log(err));
