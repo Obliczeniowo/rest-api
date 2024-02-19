@@ -19,10 +19,23 @@ const getError = (message, code) => {
 };
 
 exports.getPosts = (req, res, next) => {
+  const page = req.query.page;
+  const perPage = 2;
+  let totalIatems;
+
   Post.find()
+    .countDocuments()
+    .then((count) => {
+      totalIatems = count;
+      return Post.find()
+        .skip((page - 1) * perPage)
+        .limit(perPage);
+    })
     .then((posts) => {
       res.status(200).json({
         posts,
+        totalItems: totalIatems,
+        
       });
     })
     .catch((err) => {
@@ -123,8 +136,9 @@ exports.deletePost = (req, res, next) => {
       }
       clearImage(post.imageUrl);
       return post.findByIdAndRemove(id);
-    }).catch(result => {
-        res.status(200).json({ message: 'Post deleted'})
+    })
+    .catch((result) => {
+      res.status(200).json({ message: 'Post deleted' });
     })
     .catch((err) => {
       errorCb(err, next);
