@@ -7,6 +7,6 @@ exports.errorCb = (err, next) => {
 
 exports.getError = (message, code) => {
     const err = new Error(message);
-    err.status = code;
+    err.statusCode = code;
     return err;
 };
